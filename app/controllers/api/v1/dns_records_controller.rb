@@ -60,7 +60,7 @@ module Api
           DnsHostname.insert_all(dns_hostnames_params(dns_record.id))
         end
 
-        render json: { id: dns_record.id }, status: :ok
+        render json: { id: dns_record.id }, status: :created
       rescue ActiveRecord::RecordNotUnique => e
         render status: :conflict
       end
