@@ -9,7 +9,7 @@ module Api
         unless params[:page].present?
           return render json: { error: 'page params is required' }, status: :bad_request 
         end
-
+        
         allow_list = params[:included].present? ? params[:included].split(',') : []
         deny_list = params[:excluded].present? ? params[:excluded].split(',') : []
         dns_list_response = []

@@ -215,7 +215,49 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
         end
 
         before :each do
-          get(:index, params: { page: page, included: included })
+          get(:index, params: { page: page, included: included.join(',') })
+        end
+
+        it 'responds with valid response' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns only the included dns records without a related hostname' do
+          expect(parsed_body).to eq expected_response
+        end
+      end
+
+      context 'with the included optional param' do
+        let(:included) { [lorem] }
+
+        let(:expected_response) do
+          {
+            total_records: 1,
+            records: [
+              {
+                id: 26,
+                ip_address: ip1
+              }
+            ],
+            related_hostnames: [
+              {
+                count: 1,
+                hostname: ipsum
+              },
+              {
+                count: 1,
+                hostname: dolor
+              },
+              {
+                count: 1,
+                hostname: amet
+              }
+            ]
+          }
+        end
+
+        before :each do
+          get(:index, params: { page: page, included: included.join(',') })
         end
 
         it 'responds with valid response' do
@@ -235,19 +277,19 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
             total_records: 4,
             records: [
               {
-                id: 27,
+                id: 37,
                 ip_address: ip2
               },
               {
-                id: 28,
+                id: 38,
                 ip_address: ip3
               },
               {
-                id: 29,
+                id: 39,
                 ip_address: ip4
               },
               {
-                id: 30,
+                id: 40,
                 ip_address: ip5
               }
             ],
@@ -273,7 +315,7 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
         end
 
         before :each do
-          get(:index, params: { page: page, excluded: excluded })
+          get(:index, params: { page: page, excluded: excluded.join(',') })
         end
 
         it 'responds with valid response' do
@@ -294,11 +336,11 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
             total_records: 2,
             records: [
               {
-                id: 36,
+                id: 46,
                 ip_address: ip1
               },
               {
-                id: 38,
+                id: 48,
                 ip_address: ip3
               }
             ],
@@ -316,7 +358,7 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
         end
 
         before :each do
-          get(:index, params: { page: page, included: included, excluded: excluded })
+          get(:index, params: { page: page, included: included.join(','), excluded: excluded.join(',') })
         end
 
         it 'responds with valid response' do
@@ -335,12 +377,13 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
       end
 
       it 'responds with unprocessable entity status' do
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
 
-  describe '#create' do
-    # TODO
-  end
+
+  # describe '#create' do
+  #   # TODO
+  # end
 end
