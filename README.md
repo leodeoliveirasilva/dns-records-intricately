@@ -144,6 +144,6 @@ Querying the dns_records:
 
 ```sh
 curl --request GET \
-  --url 'http://localhost:3000/dns_records?included=ipsum.com,dolor.com&excluded=sit.com' \
+  --url 'http://localhost:3000/dns_records?included=ipsum.com,dolor.com&excluded=sit.com&page=1' \
   --header 'content-type: application/json'
 ```
